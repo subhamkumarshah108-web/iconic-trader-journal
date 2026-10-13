@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICONIC TRADER | Trading Journal</title>
+<style>
+:root{--bg:#090909;--panel:#141414;--gold:#d6ad55;--muted:#aaa;--line:#2b2b2b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f5f5;font:15px Arial,sans-serif}
+header{padding:28px 6%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:2px;font-size:22px}.brand span{color:var(--gold)}
+nav a{color:#ddd;text-decoration:none;margin-left:18px;font-size:13px}
+main{max-width:1100px;margin:auto;padding:35px 20px}
+.hero{padding:38px 0 28px}.eyebrow{color:var(--gold);letter-spacing:3px;font-size:12px}
+h1{font-size:clamp(34px,7vw,58px);margin:12px 0}.hero p{color:var(--muted);line-height:1.7;max-width:650px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card small{color:var(--muted)}.value{font-size:27px;font-weight:700;margin-top:10px;color:var(--gold)}
+section{margin:35px 0}h2{font-size:21px}.note{color:var(--muted);line-height:1.6}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+input,select,button{background:#0d0d0d;color:#fff;border:1px solid #444;border-radius:7px;padding:12px;font:inherit}
+button{background:var(--gold);color:#111;font-weight:700;border:0;cursor:pointer}
+table{width:100%;border-collapse:collapse;min-width:580px}th,td{text-align:left;padding:13px;border-bottom:1px solid var(--line)}th{color:var(--gold);font-size:12px}
+.table-wrap{overflow-x:auto}.empty{color:var(--muted);padding:20px 0}
+footer{border-top:1px solid var(--line);padding:25px 6%;color:var(--muted);text-align:center;font-size:12px}
+.warning{font-size:12px;color:#d6ad55;margin-top:12px}
+@media(max-width:600px){nav a{margin-left:9px}header{padding:20px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="brand">ICONIC <span>TRADER</span></div><nav><a href="#dashboard">Dashboard</a><a href="#journal">Journal</a><a href="#about">About</a></nav></header>
+<main>
+<div class="hero"><div class="eyebrow">DISCIPLINE • PROCESS • PROGRESS</div><h1>Trade with a <span style="color:var(--gold)">purpose.</span></h1><p>A transparent trading journal by SUBHAM SHAH. Documenting the process, learning from every trade, and building consistency one session at a time.</p></div>
+<section id="dashboard"><h2>Trading dashboard</h2><div class="stats">
+<div class="card"><small>Total trades recorded</small><div class="value" id="total">0</div></div>
+<div class="card"><small>Wins</small><div class="value" id="wins">0</div></div>
+<div class="card"><small>Losses</small><div class="value" id="losses">0</div></div>
+<div class="card"><small>Net P/L (USD)</small><div class="value" id="net">$0.00</div></div>
+</div></section>
+<section id="journal"><h2>Trade journal</h2><p class="note">Record your trades below. This starter version saves entries in this browser only.</p>
+<form id="tradeForm">
+<input type="date" id="date" required aria-label="Trade date">
+<select id="pair"><option>XAUUSD</option></select>
+<select id="direction"><option>Buy</option><option>Sell</option></select>
+<select id="result"><option value="Win">Win</option><option value="Loss">Loss</option><option value="Break-even">Break-even</option></select>
+<input type="number" id="pnl" step="0.01" placeholder="P/L in USD" required>
+<input type="text" id="note" placeholder="Setup / lesson (optional)">
+<button type="submit">Add trade</button>
+</form><div class="table-wrap" style="margin-top:20px"><table><thead><tr><th>Date</th><th>Pair</th><th>Side</th><th>Result</th><th>P/L</th><th>Note</th></tr></thead><tbody id="rows"></tbody></table></div>
+<p class="warning">Important: entries are stored only on the device/browser where they are added. They are not yet published or synced for public visitors.</p>
+</section>
+<section id="about"><h2>About ICONIC TRADER</h2><p class="note">A one-year trading journal beginning 13 October 2026. Focus: XAUUSD intraday trading, planned risk, patience, and honest review. Public website access does not mean private account details should be shared.</p></section>
+</main><footer>© 2026 ICONIC TRADER · SUBHAM SHAH</footer>
+<script>
+const key='iconic-trader-trades-v1';let trades=JSON.parse(localStorage.getItem(key)||'[]');
+const $=id=>document.getElementById(id);
+function render(){ $('rows').innerHTML='';let wins=0,losses=0,net=0;trades.forEach(t=>{if(t.result==='Win')wins++;if(t.result==='Loss')losses++;net+=Number(t.pnl);let tr=document.createElement('tr');[t.date,t.pair,t.direction,t.result,(Number(t.pnl)>=0?'+':'')+Number(t.pnl).toFixed(2),t.note].forEach(v=>{let td=document.createElement('td');td.textContent=v;tr.appendChild(td)});$('rows').appendChild(tr)});$('total').textContent=trades.length;$('wins').textContent=wins;$('losses').textContent=losses;$('net').textContent=(net<0?'-$':'$')+Math.abs(net).toFixed(2)}
+$('tradeForm').addEventListener('submit',e=>{e.preventDefault();trades.unshift({date:$('date').value,pair:$('pair').value,direction:$('direction').value,result:$('result').value,pnl:$('pnl').value,note:$('note').value});localStorage.setItem(key,JSON.stringify(trades));e.target.reset();render()});$('date').value=new Date().toISOString().slice(0,10);render();
+</script></body></html>
